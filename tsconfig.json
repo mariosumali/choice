@@ -20,7 +20,12 @@
     "noFallthroughCasesInSwitch": true,
 
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "system-volume": ["./plugins/system-volume/src/index.ts"]
+    }
   },
   "include": ["src", "plugins/system-volume/src"],
   "exclude": ["node_modules", "dist", "ios", "plugins/system-volume/dist"]
