@@ -247,47 +247,57 @@ export const Oracle = forwardRef<OracleHandle, Props>(function Oracle(
             },
           );
 
-          // 6) Answer text emerges through the flash, holds, then dissolves
+          // 6) Answer text emerges slowly through the flash, holds, then dissolves.
+          //    Phase offsets as fractions of TEXT_TOTAL_MS.
+          const inEnd = TEXT_IN_MS / TEXT_TOTAL_MS;
+          const holdEnd = (TEXT_IN_MS + TEXT_HOLD_MS) / TEXT_TOTAL_MS;
           const answerAnim = answerEl.animate(
             [
               {
                 opacity: 0,
-                transform: 'translateY(16px) scale(0.88)',
-                filter: 'blur(10px)',
-                letterSpacing: '0.05em',
+                transform: 'translateY(18px) scale(0.86)',
+                filter: 'blur(14px)',
+                letterSpacing: '0.04em',
               },
               {
-                opacity: 1,
-                transform: 'translateY(0) scale(1.04)',
-                filter: 'blur(0)',
-                letterSpacing: '0.18em',
-                offset: (GATHER_MS + FLASH_MS * 0.55) / TOTAL_MS,
+                opacity: 0.12,
+                transform: 'translateY(12px) scale(0.92)',
+                filter: 'blur(10px)',
+                letterSpacing: '0.08em',
+                offset: inEnd * 0.35,
+              },
+              {
+                opacity: 0.55,
+                transform: 'translateY(4px) scale(0.98)',
+                filter: 'blur(4px)',
+                letterSpacing: '0.13em',
+                offset: inEnd * 0.7,
               },
               {
                 opacity: 1,
                 transform: 'translateY(0) scale(1)',
                 filter: 'blur(0)',
                 letterSpacing: '0.14em',
-                offset: (GATHER_MS + FLASH_MS) / TOTAL_MS,
+                offset: inEnd,
               },
               {
                 opacity: 1,
                 transform: 'translateY(-2px) scale(1)',
                 filter: 'blur(0)',
                 letterSpacing: '0.14em',
-                offset: (GATHER_MS + FLASH_MS + HOLD_MS) / TOTAL_MS,
+                offset: holdEnd,
               },
               {
                 opacity: 0,
-                transform: 'translateY(-12px) scale(0.98)',
+                transform: 'translateY(-14px) scale(0.98)',
                 filter: 'blur(6px)',
                 letterSpacing: '0.22em',
               },
             ],
             {
-              delay: 0,
-              duration: TOTAL_MS,
-              easing: 'cubic-bezier(.22,.85,.28,1)',
+              delay: TEXT_DELAY_MS,
+              duration: TEXT_TOTAL_MS,
+              easing: 'cubic-bezier(.33,.7,.35,1)',
               fill: 'forwards',
             },
           );
