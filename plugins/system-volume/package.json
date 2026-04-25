@@ -1,0 +1,36 @@
+{
+  "name": "system-volume",
+  "version": "0.1.0",
+  "description": "Capacitor plugin that reads system output volume via AVAudioSession (iOS + Mac Catalyst).",
+  "main": "dist/plugin.cjs.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "unpkg": "dist/plugin.js",
+  "files": [
+    "dist/",
+    "ios/Plugin/",
+    "SystemVolume.podspec"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "verify:ios": "cd ios && pod install --verbose && xcodebuild -workspace Plugin.xcworkspace -scheme Plugin"
+  },
+  "keywords": [
+    "capacitor",
+    "plugin",
+    "volume"
+  ],
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  },
+  "peerDependencies": {
+    "@capacitor/core": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/core": "^6.1.2",
+    "typescript": "^5.6.3"
+  }
+}
