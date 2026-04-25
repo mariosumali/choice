@@ -1,36 +1,63 @@
 # coin
 
-A minimalist decision-making app for macOS and iOS. It presents itself as a fair coin flip and choice picker — but it is secretly, completely rigged by system volume.
+A minimalist decision-making app for iOS and macOS (via Mac Catalyst). It looks like a simple coin, wheel, dice, and yes/no oracle — and it stays deadpan and premium. Under the hood, outcomes can follow your system volume (only on device; the browser build uses a neutral stub so everything feels “fairly random” while you develop).
+
+---
+
+## What it looks like
+
+<p align="center">
+  <img src="docs/screenshots/coin.png" alt="Coin mode: 3D coin with H on the face, design swatches, Flip the coin" width="45%" />
+  &nbsp;
+  <img src="docs/screenshots/wheel.png" alt="Wheel mode: two-way wheel for Pizza and Tacos" width="45%" />
+  <br />
+  <sub>Coin &mdash; pick a finish, flip a weighted 3D coin. Wheel &mdash; up to eight labels, one spin.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/dice.png" alt="Dice mode: 3D die showing one pip, result ONE" width="45%" />
+  &nbsp;
+  <img src="docs/screenshots/oracle.png" alt="Oracle mode: dark sphere, Ask the oracle control" width="45%" />
+  <br />
+  <sub>Dice &mdash; one D6 with a big readable result. Oracle &mdash; hold to ask, release for Yes / No / Maybe.</sub>
+</p>
+
+*Screenshots from the Vite dev server; layout and theming are the same in the native shell.*
+
+---
+
+## Features
+
+| Mode | You get |
+| --- | --- |
+| Coin | Six designs (brass, obsidian, jade, …) — stored in `localStorage` as `coin.design` |
+| Wheel | Up to eight choices, SVG wheel + spin |
+| Dice | D6 with roll animation and spelled-out result |
+| Oracle | Yes / No / Maybe with a press-and-hold ritual — no winks, no tutorial |
+
+Non-goals (per the PRD): no accounts, history, share sheet, hints UI, or settings screen.
+
+---
+
+## The volume twist (on device)
+
+On iOS and Catalyst, a small Capacitor plugin reads `AVAudioSession.outputVolume` and turns it into notches (`round(outputVolume * 16)` on the default 16-step UI). The web build does not read real volume — the plugin falls back to a mid “random” level so you can develop in Chrome without surprises.
+
+Rigging is implemented as pure functions in `src/lib/rigging.ts`. Rough cheat sheet:
+
+- Coin: 0 notches (or muted) → always heads; 1 → always tails; 2+ → random.
+- Wheel: 0 / muted → random; 1…8 → force that segment; 9+ → random.
+- Dice and Oracle have their own notch→outcome tables (see `choice-prd.md` for the full matrix).
+
+---
 
 ## Stack
 
-- Vite + React 18 + TypeScript web UI
-- Capacitor 6 wraps the UI into a native iOS app; Mac Catalyst ships the same codebase on macOS
-- Local Capacitor plugin `system-volume` reads `AVAudioSession.outputVolume` in Swift
+- Vite, React 18, TypeScript for the UI
+- Capacitor 6 wraps the web app for iOS; Mac Catalyst can run the same target on macOS
+- Local plugin `plugins/system-volume` (Swift) bridges `outputVolume` to JavaScript
 
-## Coin designs
-
-In **Coin** mode, six swatches under the mode toggle change the 3D coin (faces, edge slice lighting, and optional details like dots or sheen). The choice is saved in `localStorage` as `coin.design` (Brass, Obsidian, Jade, Bronze, Porcelain, Neon). The wheel mode does not show the swatches.
-
-## Rigging rules
-
-**Coin flip**
-
-| Notches   | Result             |
-| --------- | ------------------ |
-| 0 / muted | Always HEADS       |
-| 1         | Always TAILS       |
-| 2+        | Truly random       |
-
-**Choice picker wheel** (up to 8 items)
-
-| Notches   | Result             |
-| --------- | ------------------ |
-| 0 / muted | Truly random       |
-| 1..8      | Forces choice N    |
-| 9+        | Truly random       |
-
-Volume is converted to notches as `round(outputVolume * 16)` (iOS default step count).
+---
 
 ## Run locally (browser)
 
@@ -40,53 +67,56 @@ npm install
 npm run dev
 ```
 
-The browser build uses a stub that reports mid-level volume, so both modes run in "truly random" mode. Use a device to exercise the rigging.
+Open the URL Vite prints (e.g. `http://localhost:5173/`). Volume rigging will not match a phone — use a device to feel the real behavior.
+
+---
 
 ## Run on iOS
 
-Requires full Xcode (not just the Command Line Tools) and CocoaPods installed.
+You need full **Xcode** (not only Command Line Tools) and **CocoaPods**.
 
 ```bash
 npm install
 (cd plugins/system-volume && npm install && npx tsc)
 npm run build
-npx cap sync ios   # runs pod install and registers the SystemVolume plugin
-npx cap open ios   # opens Xcode
+npx cap sync ios
+npx cap open ios
 ```
 
-In Xcode, select a simulator or device and hit Run.
+In Xcode, pick a simulator or device and run. `cap sync` runs `pod install` and registers the System Volume plugin.
+
+---
 
 ## Run on macOS (Mac Catalyst)
 
-1. Open the iOS workspace in Xcode (`npx cap open ios`).
-2. Select the **App** target.
-3. Under **Supported Destinations**, click **+** and add **Mac Catalyst**.
-4. Build and run with the Mac destination selected.
+1. Open the iOS workspace (`npx cap open ios`), select the **App** target.  
+2. Under **Supported Destinations**, add **Mac Catalyst** if it’s not there.  
+3. Build and run with the **My Mac** destination.  
 
-`AVAudioSession.outputVolume` is fully available on Catalyst and returns the Mac's system output volume.
+`AVAudioSession.outputVolume` is available on Catalyst, so volume-driven outcomes work like on iPhone.
+
+---
 
 ## Project layout
 
 ```
 src/
-  App.tsx                   mode switcher
-  modes/
-    CoinFlip.tsx            coin flip mode
-    ChoicePicker.tsx        choice picker + wheel
-  components/
-    Coin.tsx                3D coin markup
-    Wheel.tsx               SVG wheel
-    ModeToggle.tsx          top bar toggle
+  App.tsx                 # Mode switcher, design persistence
+  main.tsx, styles.css
+  modes/                  # Coin, Wheel, Dice, Oracle screens
+  components/              # Coin, Wheel, dice, ModeToggle, DesignPicker, Oracle, …
   lib/
-    volume.ts               cross-platform volume reader
-    rigging.ts              rigging engine (pure functions)
-  styles.css                design system
-
-plugins/system-volume/      local Capacitor plugin
-  src/                      TS bridge
-  ios/Plugin/               Swift AVAudioSession reader
+    volume.ts             # Capacitor plugin + web fallback
+    rigging.ts            # Pure “what should happen for this reading?”
+    coinDesigns.ts
+plugins/system-volume/    # Local Capacitor plugin (TypeScript + Swift)
+ios/                      # Xcode project, pods, native shell
 ```
 
-## Non-goals
+More product detail: **`choice-prd.md`**.
 
-Per the PRD: no accounts, no history, no share, no hints, no settings.
+---
+
+## License
+
+Private / unpublished — add a license if you open-source this repo.
