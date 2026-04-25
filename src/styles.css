@@ -1,0 +1,1538 @@
+:root {
+  --ivory: #f5f2ec;
+  --ivory-2: #ece7dd;
+  --ink: #141414;
+  --ink-soft: rgba(20, 20, 20, 0.68);
+  --ink-faint: rgba(20, 20, 20, 0.32);
+  --brass: #b8924a;
+  --brass-hi: #e1bd7a;
+  --brass-lo: #7a5e28;
+  --brass-deep: #4a3815;
+  --shadow-1: 0 1px 2px rgba(20, 20, 20, 0.08);
+  --shadow-2: 0 8px 24px rgba(20, 20, 20, 0.12);
+  --shadow-3: 0 40px 80px rgba(20, 20, 20, 0.18);
+  --ease-decel: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-wheel: cubic-bezier(0.15, 0.85, 0.25, 1);
+  --serif: 'Playfair Display', 'New York', 'Times New Roman', Georgia, serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+body {
+  background:
+    radial-gradient(
+      1200px 800px at 50% -10%,
+      #fbf9f3 0%,
+      var(--ivory) 60%,
+      var(--ivory-2) 100%
+    );
+  background-attachment: fixed;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+  color: inherit;
+}
+
+.app {
+  position: relative;
+  min-height: 100dvh;
+  min-height: 100vh;
+  width: 100%;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.topbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 0 0;
+}
+
+.design-picker {
+  display: inline-flex;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.03);
+  box-shadow: inset 0 0 0 1px rgba(20, 20, 20, 0.05);
+}
+
+.design-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  transition: transform 220ms var(--ease-decel), box-shadow 220ms var(--ease-decel);
+  box-shadow: 0 1px 2px rgba(20, 20, 20, 0.18),
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+}
+
+.design-swatch:focus {
+  outline: none;
+}
+
+.design-swatch:focus-visible {
+  box-shadow: 0 0 0 2px var(--ivory), 0 0 0 4px var(--ink);
+}
+
+.design-swatch:hover {
+  transform: scale(1.08);
+}
+
+.design-swatch.active {
+  transform: scale(1.12);
+  box-shadow:
+    0 0 0 1.5px var(--ivory),
+    0 0 0 3px var(--ink),
+    0 2px 4px rgba(20, 20, 20, 0.22);
+}
+
+.design-swatch[data-design='ivory'] {
+  background: radial-gradient(
+    ellipse 85% 75% at 30% 25%,
+    #fefcf6 0%,
+    #f3ede0 55%,
+    #ddd3bf 100%
+  );
+  box-shadow:
+    0 1px 2px rgba(20, 20, 20, 0.18),
+    inset 0 0 0 0.5px rgba(80, 60, 30, 0.18);
+}
+
+.design-swatch[data-design='brass'] {
+  background: radial-gradient(
+    circle at 32% 28%,
+    #fbe6b6 0%,
+    #c9a05a 55%,
+    #5f4518 100%
+  );
+}
+
+.design-swatch[data-design='obsidian'] {
+  background: radial-gradient(
+    circle at 34% 26%,
+    #3a343a 0%,
+    #0a0608 60%,
+    #000 100%
+  );
+}
+
+.design-swatch[data-design='jade'] {
+  background: radial-gradient(
+    circle at 30% 25%,
+    #d9ecd7 0%,
+    #4e8a6e 55%,
+    #1f4a3a 100%
+  );
+}
+
+.design-swatch[data-design='bronze'] {
+  background:
+    radial-gradient(
+      circle at 70% 75%,
+      rgba(60, 120, 90, 0.6) 0%,
+      rgba(60, 120, 90, 0) 50%
+    ),
+    radial-gradient(
+      circle at 34% 28%,
+      #d9a666 0%,
+      #6a4a20 60%,
+      #3b2810 100%
+    );
+}
+
+.design-swatch[data-design='porcelain'] {
+  background: radial-gradient(
+    circle at 32% 24%,
+    #ffffff 0%,
+    #f4ecdc 55%,
+    #b39e80 100%
+  );
+  box-shadow: 0 1px 2px rgba(20, 20, 20, 0.18),
+    inset 0 0 0 0.5px rgba(24, 64, 138, 0.45);
+}
+
+.design-swatch[data-design='porcelain']::after {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  background: #18408a;
+  opacity: 0.85;
+}
+
+.design-swatch[data-design='neon'] {
+  background:
+    radial-gradient(
+      circle at 30% 22%,
+      rgba(180, 245, 255, 0.8) 0%,
+      rgba(180, 245, 255, 0) 55%
+    ),
+    radial-gradient(
+      circle at 75% 78%,
+      rgba(255, 120, 220, 0.7) 0%,
+      rgba(255, 120, 220, 0) 58%
+    ),
+    #0c0820;
+  box-shadow:
+    0 0 8px rgba(94, 210, 255, 0.4),
+    0 0 14px rgba(255, 80, 220, 0.25),
+    inset 0 0 0 0.5px rgba(94, 210, 255, 0.6);
+}
+
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(20, 20, 20, 0.06);
+}
+
+.mode-toggle button {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  transition: color 240ms var(--ease-decel), background 240ms var(--ease-decel);
+}
+
+.mode-toggle button.active {
+  color: var(--ink);
+  background: var(--ivory);
+  box-shadow: var(--shadow-1), 0 0 0 1px rgba(20, 20, 20, 0.04);
+}
+
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.result {
+  margin-top: 56px;
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(36px, 7vw, 72px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  min-height: 1.2em;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 420ms var(--ease-decel), transform 420ms var(--ease-decel);
+}
+
+.result.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Coin ---------- */
+
+.coin-scene {
+  --size: min(62vmin, 420px);
+  --radius: calc(var(--size) / 2);
+  --depth-ratio: 0.062;
+  --slices: 56;
+  --depth: calc(var(--size) * var(--depth-ratio));
+  --slice-h: calc(var(--size) * 3.141592653589793 / var(--slices) * 1.06);
+
+  perspective: 2000px;
+  perspective-origin: 50% 42%;
+  width: var(--size);
+  height: var(--size);
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+
+.coin-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  width: 86%;
+  height: 12%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(20, 20, 20, 0.5) 0%,
+    rgba(20, 20, 20, 0.24) 40%,
+    rgba(20, 20, 20, 0) 75%
+  );
+  filter: blur(10px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.coin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.coin-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-weight: 900;
+  color: #3e2f12;
+  font-size: 40vmin;
+  line-height: 1;
+  letter-spacing: -0.02em;
+
+  background:
+    radial-gradient(
+      circle at 32% 26%,
+      #fbe6b6 0%,
+      #edc983 16%,
+      #c9a05a 44%,
+      #9c7838 78%,
+      #5f4518 100%
+    );
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 240, 200, 0.28),
+    inset 0 -22px 34px rgba(60, 40, 10, 0.55),
+    inset 0 18px 28px rgba(255, 236, 190, 0.4),
+    0 0 0 1px rgba(60, 40, 10, 0.55);
+}
+
+.coin-face.heads {
+  transform: translateZ(calc(var(--depth) / 2));
+}
+
+.coin-face.tails {
+  transform: translateZ(calc(var(--depth) / -2)) rotateY(180deg);
+}
+
+.face-rim-outer {
+  position: absolute;
+  inset: 3.5%;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(60, 40, 10, 0.55),
+    inset 0 0 0 2.5px rgba(255, 236, 190, 0.2);
+  pointer-events: none;
+}
+
+.face-rim-inner {
+  position: absolute;
+  inset: 7%;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1px rgba(60, 40, 10, 0.32),
+    inset 0 4px 14px rgba(255, 236, 190, 0.22),
+    inset 0 -4px 14px rgba(60, 40, 10, 0.32);
+  pointer-events: none;
+}
+
+.face-dots {
+  position: absolute;
+  inset: 6.5%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.face-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3%;
+  height: 3%;
+  margin-top: -1.5%;
+  margin-left: -1.5%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    #fff2c8 0%,
+    #c09251 55%,
+    #5b4316 100%
+  );
+  box-shadow:
+    inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4),
+    inset 0 -0.5px 0.5px rgba(0, 0, 0, 0.35);
+  transform-origin: center 50%;
+}
+
+.face-bevel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 60%,
+    rgba(60, 40, 10, 0.35) 96%,
+    rgba(20, 10, 0, 0.6) 100%
+  );
+}
+
+.face-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 55% 35% at 30% 22%,
+      rgba(255, 248, 222, 0.65) 0%,
+      rgba(255, 248, 222, 0) 60%
+    ),
+    radial-gradient(
+      ellipse 30% 18% at 72% 80%,
+      rgba(255, 240, 200, 0.22) 0%,
+      rgba(255, 240, 200, 0) 65%
+    );
+  mix-blend-mode: screen;
+}
+
+.coin-face .glyph {
+  position: relative;
+  z-index: 1;
+  font-size: 48%;
+  transform: translateY(-1%);
+  text-shadow:
+    0 1px 0 rgba(255, 248, 222, 0.55),
+    0 -1px 0 rgba(40, 26, 4, 0.55),
+    0 2px 3px rgba(40, 26, 4, 0.35);
+}
+
+.coin-rim {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--depth);
+  height: var(--slice-h);
+  margin-top: calc(var(--slice-h) / -2);
+  margin-left: calc(var(--depth) / -2);
+  transform: rotateZ(var(--a)) translateX(var(--radius)) rotateY(90deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow:
+    inset 1px 0 0 rgba(255, 240, 200, 0.18),
+    inset -1px 0 0 rgba(30, 18, 2, 0.5);
+  transition: background-color 400ms var(--ease-decel);
+}
+
+.coin-rim::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(30, 18, 2, 0.55) 0%,
+    rgba(30, 18, 2, 0) 22%,
+    rgba(255, 240, 200, 0.1) 50%,
+    rgba(30, 18, 2, 0) 78%,
+    rgba(30, 18, 2, 0.55) 100%
+  );
+  transition: background 400ms var(--ease-decel);
+}
+
+.coin-face,
+.coin-face .glyph,
+.face-sheen,
+.face-bevel,
+.face-rim-outer,
+.face-rim-inner,
+.face-dot {
+  transition:
+    background 400ms var(--ease-decel),
+    color 400ms var(--ease-decel),
+    box-shadow 400ms var(--ease-decel),
+    text-shadow 400ms var(--ease-decel);
+}
+
+/* ---------- Design: Ivory ---------- */
+
+.coin-scene[data-design='ivory'] .coin-face {
+  color: var(--ink);
+  background: radial-gradient(
+    ellipse 85% 75% at 30% 25%,
+    #fefcf6 0%,
+    #f3ede0 55%,
+    #ddd3bf 100%
+  );
+  box-shadow:
+    inset 0 10px 22px rgba(255, 255, 255, 0.6),
+    inset 0 -14px 28px rgba(80, 60, 30, 0.14),
+    0 0 0 1px rgba(80, 60, 30, 0.22);
+}
+
+.coin-scene[data-design='ivory'] .face-bevel {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 66%,
+    rgba(80, 60, 30, 0.14) 96%,
+    rgba(40, 30, 15, 0.28) 100%
+  );
+}
+
+.coin-scene[data-design='ivory'] .face-sheen {
+  background: radial-gradient(
+    ellipse 55% 32% at 30% 22%,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  mix-blend-mode: normal;
+}
+
+.coin-scene[data-design='ivory'] .glyph {
+  font-weight: 800;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55),
+    0 0 6px rgba(80, 60, 30, 0.12);
+}
+
+.coin-scene[data-design='ivory'] .coin-rim::before {
+  background: linear-gradient(
+    to right,
+    rgba(80, 60, 30, 0.32) 0%,
+    rgba(80, 60, 30, 0.04) 28%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(80, 60, 30, 0.04) 72%,
+    rgba(80, 60, 30, 0.32) 100%
+  );
+}
+
+/* ---------- Design: Obsidian ---------- */
+
+.coin-scene[data-design='obsidian'] .coin-face {
+  color: #e7c567;
+  background:
+    radial-gradient(
+      circle at 34% 26%,
+      #353036 0%,
+      #1a171a 30%,
+      #0a0608 65%,
+      #020101 100%
+    );
+  box-shadow:
+    inset 0 0 0 1.5px rgba(231, 197, 103, 0.25),
+    inset 0 -18px 36px rgba(0, 0, 0, 0.7),
+    inset 0 12px 24px rgba(231, 197, 103, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.8);
+}
+
+.coin-scene[data-design='obsidian'] .face-rim-outer {
+  box-shadow:
+    inset 0 0 0 1px rgba(231, 197, 103, 0.42),
+    inset 0 0 0 1.5px rgba(0, 0, 0, 0.4);
+}
+
+.coin-scene[data-design='obsidian'] .face-bevel {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(0, 0, 0, 0.55) 95%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+}
+
+.coin-scene[data-design='obsidian'] .glyph {
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.9),
+    0 1px 0 rgba(255, 220, 140, 0.35),
+    0 -1px 0 rgba(0, 0, 0, 0.9);
+}
+
+.coin-scene[data-design='obsidian'] .coin-rim::before {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.2) 30%,
+    rgba(231, 197, 103, 0.08) 50%,
+    rgba(0, 0, 0, 0.2) 70%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+}
+
+/* ---------- Design: Jade ---------- */
+
+.coin-scene[data-design='jade'] .coin-face {
+  color: #0e2118;
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 30% 25%,
+      #d9ecd7 0%,
+      #8fc09c 28%,
+      #4e8a6e 62%,
+      #1f4a3a 100%
+    );
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.18),
+    inset 0 -18px 32px rgba(10, 40, 28, 0.55),
+    inset 0 14px 28px rgba(255, 255, 255, 0.14),
+    0 0 0 1px rgba(10, 40, 28, 0.6);
+}
+
+.coin-scene[data-design='jade'] .face-rim-outer {
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 40, 28, 0.45),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+}
+
+.coin-scene[data-design='jade'] .face-rim-inner {
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 40, 28, 0.3),
+    inset 0 4px 14px rgba(255, 255, 255, 0.18),
+    inset 0 -4px 14px rgba(10, 40, 28, 0.35);
+}
+
+.coin-scene[data-design='jade'] .face-bevel {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(10, 40, 28, 0.4) 96%,
+    rgba(5, 20, 14, 0.7) 100%
+  );
+}
+
+.coin-scene[data-design='jade'] .glyph {
+  text-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.35),
+    0 -1px 0 rgba(0, 0, 0, 0.45);
+}
+
+.coin-scene[data-design='jade'] .coin-rim::before {
+  background: linear-gradient(
+    to right,
+    rgba(10, 30, 20, 0.7) 0%,
+    rgba(10, 30, 20, 0) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(10, 30, 20, 0) 75%,
+    rgba(10, 30, 20, 0.7) 100%
+  );
+}
+
+/* ---------- Design: Bronze (weathered) ---------- */
+
+.coin-scene[data-design='bronze'] .coin-face {
+  color: #2a1808;
+  background:
+    radial-gradient(
+      circle at 68% 78%,
+      rgba(60, 120, 90, 0.5) 0%,
+      rgba(60, 120, 90, 0) 22%
+    ),
+    radial-gradient(
+      circle at 22% 70%,
+      rgba(60, 120, 90, 0.32) 0%,
+      rgba(60, 120, 90, 0) 16%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(50, 110, 80, 0.35) 0%,
+      rgba(50, 110, 80, 0) 14%
+    ),
+    radial-gradient(
+      circle at 34% 28%,
+      #d9a666 0%,
+      #9b6d34 30%,
+      #6a4a20 62%,
+      #3b2810 100%
+    );
+  box-shadow:
+    inset 0 0 0 2px rgba(40, 22, 6, 0.45),
+    inset 0 -22px 40px rgba(20, 10, 2, 0.65),
+    inset 0 18px 28px rgba(230, 190, 130, 0.25),
+    0 0 0 1px rgba(30, 16, 4, 0.7);
+}
+
+.coin-scene[data-design='bronze'] .face-rim-outer {
+  box-shadow:
+    inset 0 0 0 1.5px rgba(30, 16, 4, 0.65),
+    inset 0 0 0 2.5px rgba(80, 140, 100, 0.18);
+}
+
+.coin-scene[data-design='bronze'] .face-dot {
+  background: radial-gradient(
+    circle at 35% 30%,
+    #b08050 0%,
+    #6a4820 55%,
+    #2a1808 100%
+  );
+  opacity: 0.85;
+}
+
+.coin-scene[data-design='bronze'] .glyph {
+  text-shadow:
+    0 1px 0 rgba(200, 150, 90, 0.35),
+    0 -1px 0 rgba(20, 10, 2, 0.65),
+    0 2px 3px rgba(20, 10, 2, 0.4);
+}
+
+.coin-scene[data-design='bronze'] .coin-rim::before {
+  background: linear-gradient(
+    to right,
+    rgba(10, 5, 0, 0.7) 0%,
+    rgba(10, 5, 0, 0) 22%,
+    rgba(60, 120, 90, 0.18) 50%,
+    rgba(10, 5, 0, 0) 78%,
+    rgba(10, 5, 0, 0.7) 100%
+  );
+}
+
+/* ---------- Design: Porcelain ---------- */
+
+.coin-scene[data-design='porcelain'] .coin-face {
+  color: #18408a;
+  background:
+    radial-gradient(
+      ellipse 80% 65% at 32% 24%,
+      #ffffff 0%,
+      #f4ecdc 40%,
+      #ddcdb5 85%,
+      #b39e80 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 64, 138, 0.28),
+    inset 0 -14px 26px rgba(180, 160, 125, 0.45),
+    inset 0 12px 20px rgba(255, 255, 255, 0.7),
+    0 0 0 1px rgba(120, 100, 70, 0.4);
+}
+
+.coin-scene[data-design='porcelain'] .face-rim-outer {
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 64, 138, 0.55),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.coin-scene[data-design='porcelain'] .face-bevel {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 66%,
+    rgba(120, 100, 70, 0.2) 96%,
+    rgba(70, 60, 40, 0.35) 100%
+  );
+}
+
+.coin-scene[data-design='porcelain'] .face-sheen {
+  background: radial-gradient(
+    ellipse 50% 30% at 30% 20%,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  mix-blend-mode: normal;
+}
+
+.coin-scene[data-design='porcelain'] .glyph {
+  font-weight: 700;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0 6px rgba(24, 64, 138, 0.15);
+}
+
+.coin-scene[data-design='porcelain'] .coin-rim::before {
+  background: linear-gradient(
+    to right,
+    rgba(120, 100, 70, 0.45) 0%,
+    rgba(120, 100, 70, 0.05) 28%,
+    rgba(24, 64, 138, 0.18) 50%,
+    rgba(120, 100, 70, 0.05) 72%,
+    rgba(120, 100, 70, 0.45) 100%
+  );
+}
+
+/* ---------- Design: Neon ---------- */
+
+.coin-scene[data-design='neon'] {
+  filter: drop-shadow(0 0 22px rgba(94, 210, 255, 0.35))
+    drop-shadow(0 0 36px rgba(255, 80, 220, 0.22));
+}
+
+.coin-scene[data-design='neon'] .coin-face {
+  color: #b7f8ff;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 30% 22%,
+      rgba(180, 245, 255, 0.55) 0%,
+      rgba(180, 245, 255, 0) 55%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 78% 78%,
+      rgba(255, 120, 220, 0.45) 0%,
+      rgba(255, 120, 220, 0) 58%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      #1a1530 0%,
+      #0c0820 60%,
+      #02010a 100%
+    );
+  box-shadow:
+    inset 0 0 0 1.5px rgba(94, 210, 255, 0.55),
+    inset 0 -16px 28px rgba(255, 80, 220, 0.25),
+    inset 0 14px 24px rgba(94, 210, 255, 0.22),
+    0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.coin-scene[data-design='neon'] .face-rim-outer {
+  box-shadow:
+    inset 0 0 0 1px rgba(94, 210, 255, 0.65),
+    inset 0 0 10px rgba(94, 210, 255, 0.35);
+}
+
+.coin-scene[data-design='neon'] .face-sheen {
+  background: radial-gradient(
+    ellipse 45% 30% at 30% 22%,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  mix-blend-mode: screen;
+}
+
+.coin-scene[data-design='neon'] .glyph {
+  font-weight: 700;
+  color: #d8fbff;
+  text-shadow:
+    0 0 6px rgba(94, 210, 255, 0.9),
+    0 0 14px rgba(94, 210, 255, 0.6),
+    0 0 28px rgba(255, 80, 220, 0.5);
+}
+
+.coin-scene[data-design='neon'] .coin-rim {
+  box-shadow:
+    inset 1px 0 0 rgba(94, 210, 255, 0.35),
+    inset -1px 0 0 rgba(0, 0, 0, 0.6);
+}
+
+.coin-scene[data-design='neon'] .coin-rim::before {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0) 25%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(0, 0, 0, 0) 75%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+.coin-scene[data-design='neon'] .coin-shadow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(94, 210, 255, 0.4) 0%,
+    rgba(255, 80, 220, 0.22) 35%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+/* ---------- Wheel ---------- */
+
+.wheel-setup {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.wheel-setup .heading {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin: 0 0 18px 0;
+}
+
+.wheel-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.wheel-input .num {
+  width: 22px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+.wheel-input input {
+  flex: 1;
+  appearance: none;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid rgba(20, 20, 20, 0.14);
+  padding: 12px 2px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 200ms var(--ease-decel);
+}
+
+.wheel-input input::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.wheel-input input:focus {
+  border-bottom-color: var(--ink);
+}
+
+.wheel-cta {
+  margin-top: 28px;
+  align-self: center;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--ivory);
+  box-shadow: var(--shadow-2);
+  transition: transform 220ms var(--ease-decel), box-shadow 220ms var(--ease-decel),
+    opacity 220ms var(--ease-decel);
+}
+
+.wheel-cta:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-1);
+}
+
+.wheel-cta[disabled] {
+  opacity: 0.3;
+  cursor: default;
+  box-shadow: none;
+}
+
+.wheel-stage {
+  width: min(72vmin, 480px);
+  aspect-ratio: 1 / 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 28px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(20, 20, 20, 0.25));
+}
+
+.wheel-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(var(--shadow-3));
+  transition: transform 2000ms var(--ease-wheel);
+  will-change: transform;
+}
+
+.wheel-back {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 6px 10px;
+}
+
+.wheel-back:hover {
+  color: var(--ink);
+}
+
+.footer {
+  height: 40px;
+}
+
+/* ---------- Dice ---------- */
+
+.dice-scene {
+  --size: min(82vmin, 560px);
+  width: var(--size);
+  height: var(--size);
+  perspective: 1400px;
+  perspective-origin: 50% 38%;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-scene:focus {
+  outline: none;
+}
+
+.dice-cube {
+  position: relative;
+  width: 66%;
+  height: 66%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.dice-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 7%;
+  background:
+    radial-gradient(
+      ellipse 85% 75% at 30% 25%,
+      #fefcf6 0%,
+      #f3ede0 55%,
+      #ddd3bf 100%
+    );
+  box-shadow:
+    inset 0 10px 22px rgba(255, 255, 255, 0.6),
+    inset 0 -14px 28px rgba(80, 60, 30, 0.14);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Cube face placement. Each face is translated half the cube's width
+   along its local +Z after the rotation, so its outward normal points
+   along the intended axis.
+   We use --size-half which we set inline-free via a CSS var derived
+   from the cube's dimension. The cube is 66% of .dice-scene, so
+   translateZ is 33% of .dice-scene. */
+.dice-face-1 {
+  transform: translateZ(calc(var(--size) * 0.33));
+}
+.dice-face-6 {
+  transform: rotateY(180deg) translateZ(calc(var(--size) * 0.33));
+}
+.dice-face-3 {
+  transform: rotateY(90deg) translateZ(calc(var(--size) * 0.33));
+}
+.dice-face-4 {
+  transform: rotateY(-90deg) translateZ(calc(var(--size) * 0.33));
+}
+.dice-face-2 {
+  transform: rotateX(90deg) translateZ(calc(var(--size) * 0.33));
+}
+.dice-face-5 {
+  transform: rotateX(-90deg) translateZ(calc(var(--size) * 0.33));
+}
+
+.dice-pip {
+  position: absolute;
+  width: 14%;
+  height: 14%;
+  margin-left: -7%;
+  margin-top: -7%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    #4a4642 0%,
+    #1a1714 55%,
+    #050403 100%
+  );
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.5),
+    0 1px 1px rgba(0, 0, 0, 0.12);
+}
+
+.dice-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 68%;
+  height: 10%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(20, 20, 20, 0.45) 0%,
+    rgba(20, 20, 20, 0.2) 45%,
+    rgba(20, 20, 20, 0) 78%
+  );
+  filter: blur(8px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------- Oracle ---------- */
+
+.oracle-scene {
+  --size: min(62vmin, 420px);
+  width: var(--size);
+  height: var(--size);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.oracle-scene:focus {
+  outline: none;
+}
+
+/* Gentle levitation wrapper — idle floating */
+.oracle-float {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: oracle-levitate 5200ms ease-in-out infinite;
+  will-change: transform;
+}
+
+.oracle-scene.revealing .oracle-float {
+  animation-play-state: paused;
+}
+
+@keyframes oracle-levitate {
+  0% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-4%) rotate(1deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+}
+
+.oracle-pool {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 32% 24%,
+      #2a2730 0%,
+      #12101a 38%,
+      #05040a 80%,
+      #020104 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 18px 44px rgba(255, 255, 255, 0.04),
+    inset 0 -22px 56px rgba(0, 0, 0, 0.7),
+    0 40px 80px rgba(0, 0, 0, 0.35),
+    0 8px 24px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transition: transform 420ms var(--ease-decel), box-shadow 420ms var(--ease-decel);
+  animation: oracle-breathe 4200ms ease-in-out infinite;
+}
+
+.oracle-scene.revealing .oracle-pool,
+.oracle-scene.asking .oracle-pool {
+  animation: none;
+}
+
+@keyframes oracle-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+      inset 0 18px 44px rgba(255, 255, 255, 0.04),
+      inset 0 -22px 56px rgba(0, 0, 0, 0.7),
+      0 40px 80px rgba(0, 0, 0, 0.35),
+      0 8px 24px rgba(0, 0, 0, 0.25),
+      0 0 0 rgba(140, 160, 220, 0);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px rgba(200, 210, 240, 0.14),
+      inset 0 22px 60px rgba(180, 195, 235, 0.14),
+      inset 0 -22px 56px rgba(0, 0, 0, 0.72),
+      0 50px 100px rgba(0, 0, 0, 0.42),
+      0 8px 24px rgba(0, 0, 0, 0.25),
+      0 0 80px rgba(140, 160, 220, 0.45);
+  }
+}
+
+.oracle-pool::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 50% 32% at 32% 22%,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.oracle-inner-glow {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgba(170, 190, 240, 0.35) 0%,
+    rgba(150, 170, 220, 0.15) 40%,
+    rgba(120, 140, 200, 0) 70%
+  );
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 600ms var(--ease-decel);
+  animation: oracle-glow-pulse 3200ms ease-in-out infinite;
+  will-change: opacity, transform;
+  mix-blend-mode: screen;
+}
+
+.oracle-scene.revealing .oracle-inner-glow {
+  animation: none;
+}
+
+@keyframes oracle-glow-pulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+/* Slow drifting mist inside the orb (idle ambience) */
+.oracle-mist {
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse 42% 28% at 30% 30%,
+      rgba(200, 215, 245, 0.35) 0%,
+      rgba(180, 195, 230, 0) 70%
+    ),
+    radial-gradient(
+      ellipse 30% 22% at 72% 62%,
+      rgba(200, 170, 230, 0.3) 0%,
+      rgba(170, 150, 200, 0) 75%
+    ),
+    radial-gradient(
+      ellipse 18% 14% at 58% 22%,
+      rgba(230, 220, 245, 0.28) 0%,
+      rgba(220, 210, 230, 0) 70%
+    );
+  filter: blur(8px);
+  opacity: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: oracle-mist-drift 14s linear infinite;
+  will-change: transform;
+}
+
+.oracle-mist-2 {
+  animation: oracle-mist-drift-rev 18s linear infinite;
+  opacity: 0.8;
+  filter: blur(12px);
+}
+
+.oracle-scene.revealing .oracle-mist {
+  animation-duration: 4s;
+  opacity: 0.5;
+}
+
+@keyframes oracle-mist-drift {
+  0% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+  50% {
+    transform: rotate(180deg) translate(1.5%, -1%);
+  }
+  100% {
+    transform: rotate(360deg) translate(0, 0);
+  }
+}
+
+@keyframes oracle-mist-drift-rev {
+  0% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+  50% {
+    transform: rotate(-180deg) translate(-1.8%, 1.4%);
+  }
+  100% {
+    transform: rotate(-360deg) translate(0, 0);
+  }
+}
+
+.oracle-scene.asking .oracle-pool {
+  transform: scale(0.985);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 22px 60px rgba(255, 255, 255, 0.05),
+    inset 0 -22px 56px rgba(0, 0, 0, 0.72),
+    0 30px 70px rgba(0, 0, 0, 0.42),
+    0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.oracle-scene.asking .oracle-inner-glow {
+  opacity: 1.4;
+  animation: oracle-glow-tremor 900ms ease-in-out infinite;
+}
+
+@keyframes oracle-glow-tremor {
+  0%, 100% {
+    transform: scale(1.08);
+    opacity: 1.1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1.6;
+  }
+}
+
+.oracle-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40%;
+  height: 40%;
+  margin: -20% 0 0 -20%;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 210, 240, 0.12);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.oracle-scene.asking .oracle-ripple {
+  animation: oracle-ripple 2400ms ease-out infinite;
+}
+
+.oracle-scene.asking .oracle-ripple-2 {
+  animation-delay: 1100ms;
+}
+
+@keyframes oracle-ripple {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.5;
+  }
+  80% {
+    opacity: 0.05;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Rim shimmer — a conic highlight that sweeps around on reveal */
+.oracle-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(230, 220, 255, 0.05) 30deg,
+    rgba(255, 245, 210, 0.28) 60deg,
+    rgba(180, 200, 255, 0.12) 100deg,
+    rgba(255, 255, 255, 0) 180deg,
+    rgba(255, 255, 255, 0) 360deg
+  );
+  mask: radial-gradient(circle, transparent 54%, #000 62%, #000 86%, transparent 95%);
+  -webkit-mask: radial-gradient(circle, transparent 54%, #000 62%, #000 86%, transparent 95%);
+  filter: blur(2px);
+  will-change: transform, opacity;
+}
+
+/* Flash ring — bright shockwave expanding from the center on reveal */
+.oracle-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 245, 220, 0.9);
+  box-shadow:
+    0 0 40px rgba(255, 240, 210, 0.6),
+    inset 0 0 28px rgba(255, 240, 210, 0.45);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.1);
+  pointer-events: none;
+  will-change: transform, opacity, border-width;
+}
+
+/* Starfield — dormant specks that twinkle on reveal */
+.oracle-starfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.oracle-star {
+  position: absolute;
+  width: var(--star-size, 3px);
+  height: var(--star-size, 3px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 250, 230, 1) 0%,
+    rgba(255, 240, 200, 0.9) 40%,
+    rgba(255, 230, 180, 0) 100%
+  );
+  box-shadow:
+    0 0 8px rgba(255, 245, 220, 1),
+    0 0 16px rgba(255, 230, 190, 0.7);
+  transform: translate(-50%, -50%) scale(0);
+  animation: oracle-star-twinkle var(--twinkle, 2000ms) ease-in-out var(--delay, 0ms) infinite;
+}
+
+/* Idle: the starfield is visible and gently twinkling */
+.oracle-scene:not(.revealing):not(.asking) .oracle-starfield {
+  opacity: 0.7;
+}
+
+@keyframes oracle-star-twinkle {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.oracle-answer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #efe8d8;
+  font-size: clamp(36px, 9vmin, 76px);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 0 18px rgba(200, 210, 240, 0.18),
+    0 0 36px rgba(255, 235, 200, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform, filter, letter-spacing;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oracle-float,
+  .oracle-mist,
+  .oracle-mist-2,
+  .oracle-star,
+  .oracle-scene.asking .oracle-ripple {
+    animation: none !important;
+  }
+  /* Keep a gentle breathing glow even with reduced motion —
+     slow enough not to trigger vestibular discomfort. */
+  .oracle-pool {
+    animation-duration: 8s;
+  }
+  .oracle-inner-glow {
+    animation-duration: 7s;
+  }
+  /* Keep the starfield clearly visible so the orb still feels alive —
+     the underlying .oracle-star twinkle is disabled above, so this is static. */
+  .oracle-scene:not(.revealing):not(.asking) .oracle-starfield {
+    opacity: 0.55;
+  }
+
+  /* Press-and-hold feedback without motion: swap the scale-based tremor for
+     an opacity-only pulse, and the pool's press-scale for a brightness bump. */
+  .oracle-scene.asking .oracle-pool {
+    transform: none;
+    filter: brightness(1.08) saturate(1.05);
+  }
+  .oracle-scene.asking .oracle-inner-glow {
+    animation: oracle-glow-pulse-reduced 2.2s ease-in-out infinite;
+    transform: none;
+  }
+  .oracle-scene.asking .oracle-starfield {
+    opacity: 0.85;
+    transition: opacity 400ms ease-out;
+  }
+}
+
+@keyframes oracle-glow-pulse-reduced {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 1.6; }
+}
