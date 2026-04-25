@@ -1,6 +1,6 @@
 # coin
 
-A minimalist decision-making app for iOS and macOS (via Mac Catalyst). It looks like a simple coin, wheel, dice, and yes/no oracle — and it stays deadpan and premium. Under the hood, outcomes can follow your system volume (only on device; the browser build uses a neutral stub so everything feels “fairly random” while you develop).
+A minimalist decision-making app for iOS and macOS (via Mac Catalyst).
 
 ---
 
@@ -26,16 +26,6 @@ A minimalist decision-making app for iOS and macOS (via Mac Catalyst). It looks 
 
 ---
 
-## Features
-
-| Mode | You get |
-| --- | --- |
-| Coin | Six designs (brass, obsidian, jade, …) — stored in `localStorage` as `coin.design` |
-| Wheel | Up to eight choices, SVG wheel + spin |
-| Dice | D6 with roll animation and spelled-out result |
-| Oracle | Yes / No / Maybe with a press-and-hold ritual — no winks, no tutorial |
-
-Non-goals (per the PRD): no accounts, history, share sheet, hints UI, or settings screen.
 
 ---
 
@@ -49,13 +39,6 @@ Rigging is implemented as pure functions in `src/lib/rigging.ts`. Rough cheat sh
 - Wheel: 0 / muted → random; 1…8 → force that segment; 9+ → random.
 - Dice and Oracle have their own notch→outcome tables (see `choice-prd.md` for the full matrix).
 
----
-
-## Stack
-
-- Vite, React 18, TypeScript for the UI
-- Capacitor 6 wraps the web app for iOS; Mac Catalyst can run the same target on macOS
-- Local plugin `plugins/system-volume` (Swift) bridges `outputVolume` to JavaScript
 
 ---
 
@@ -117,6 +100,3 @@ More product detail: **`choice-prd.md`**.
 
 ---
 
-## License
-
-Private / unpublished — add a license if you open-source this repo.
