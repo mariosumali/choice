@@ -4,7 +4,12 @@ type OrientationEventWithPermission = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<PermissionState>;
 };
 
+type OrientationEventWithCompass = DeviceOrientationEvent & {
+  webkitCompassHeading?: number;
+};
+
 interface OrientationSnapshot {
+  alpha: number | null;
   beta: number;
   gamma: number;
 }
@@ -44,6 +49,15 @@ function randomOracleReading(): VolumeReading {
 function snapshotFromEvent(
   event: DeviceOrientationEvent,
 ): OrientationSnapshot | null {
+  const compassHeading = (event as OrientationEventWithCompass)
+    .webkitCompassHeading;
+  const alpha =
+    typeof compassHeading === 'number' && Number.isFinite(compassHeading)
+      ? compassHeading
+      : typeof event.alpha === 'number' && Number.isFinite(event.alpha)
+        ? event.alpha
+        : null;
+
   if (
     typeof event.beta !== 'number' ||
     typeof event.gamma !== 'number' ||
@@ -54,6 +68,7 @@ function snapshotFromEvent(
   }
 
   return {
+    alpha,
     beta: event.beta,
     gamma: event.gamma,
   };
@@ -138,16 +153,20 @@ async function readOrientationSnapshot(): Promise<OrientationSnapshot | null> {
   return waitForOrientation();
 }
 
-function isFlat(snapshot: OrientationSnapshot): boolean {
-  return Math.hypot(snapshot.beta, snapshot.gamma) < TILT_THRESHOLD_DEGREES;
+function screenRotationDegrees(): number {
+  const angle = window.screen.orientation?.angle;
+  return typeof angle === 'number' && Number.isFinite(angle) ? angle : 0;
 }
 
-function tiltSector(snapshot: OrientationSnapshot, count: number): number | null {
-  if (count <= 0 || isFlat(snapshot)) return null;
+function rotationSector(
+  snapshot: OrientationSnapshot,
+  count: number,
+): number | null {
+  if (count <= 0 || snapshot.alpha === null) return null;
 
-  const angle = Math.atan2(snapshot.gamma, -snapshot.beta);
-  const normalized = (angle + Math.PI * 2) % (Math.PI * 2);
-  const sectorSize = (Math.PI * 2) / count;
+  const normalized =
+    ((snapshot.alpha + screenRotationDegrees()) % 360 + 360) % 360;
+  const sectorSize = 360 / count;
   return Math.floor((normalized + sectorSize / 2) / sectorSize) % count;
 }
 
@@ -176,7 +195,7 @@ export async function readMotionWheelReading(
   const snapshot = await readOrientationSnapshot();
   if (!snapshot) return null;
 
-  const sector = tiltSector(snapshot, count);
+  const sector = rotationSector(snapshot, count);
   if (sector === null) return randomWheelReading();
 
   return readingFromNotches(sector + 1);
@@ -186,7 +205,7 @@ export async function readMotionDiceReading(): Promise<VolumeReading | null> {
   const snapshot = await readOrientationSnapshot();
   if (!snapshot) return null;
 
-  const sector = tiltSector(snapshot, 6);
+  const sector = rotationSector(snapshot, 6);
   if (sector === null) return randomDiceReading();
 
   return readingFromNotches(sector + 1);
