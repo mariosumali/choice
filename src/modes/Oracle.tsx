@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Oracle, type OracleHandle } from '../components/Oracle';
-import { readVolume } from '../lib/volume';
+import { readOracleVolume } from '../lib/volume';
 import { riggedOracle, type OracleAnswer } from '../lib/rigging';
 
 export function OracleMode() {
@@ -20,7 +20,7 @@ export function OracleMode() {
     setAsking(false);
     setRevealing(true);
 
-    const reading = await readVolume();
+    const reading = await readOracleVolume();
     const a = riggedOracle(reading);
     setAnswer(a);
 

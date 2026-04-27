@@ -50,7 +50,14 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints (e.g. `http://localhost:5173/`). Volume rigging will not match a phone — use a device to feel the real behavior.
+Open the URL Vite prints (e.g. `http://localhost:5173/`). Volume rigging will not match a phone — use a device to feel the real behavior. Mobile browsers use device orientation after the browser's motion permission prompt:
+
+- Coin: forward tilt = heads; back tilt = tails; flat = random.
+- Wheel: tilt direction picks a wheel sector; flat = random.
+- Dice: six tilt sectors map to faces 1...6; flat = random.
+- Oracle: forward = yes; back = no; side = maybe; flat = random.
+
+For local browser testing, add `?volumeNotches=0` through `?volumeNotches=16` to the URL; the value is remembered in `localStorage` for later flips.
 
 ---
 

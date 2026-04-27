@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Dice, type DiceHandle } from '../components/Dice';
-import { readVolume } from '../lib/volume';
+import { readDiceVolume } from '../lib/volume';
 import { riggedDice, type DiceFace } from '../lib/rigging';
 
 const RESULT_WORDS: Record<DiceFace, string> = {
@@ -22,7 +22,7 @@ export function DiceRoll() {
     setRolling(true);
     setResult(null);
 
-    const reading = await readVolume();
+    const reading = await readDiceVolume();
     const face = riggedDice(reading);
 
     await diceRef.current?.roll(face);

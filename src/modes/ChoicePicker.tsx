@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Wheel } from '../components/Wheel';
-import { readVolume } from '../lib/volume';
+import { readWheelVolume } from '../lib/volume';
 import { riggedWheel } from '../lib/rigging';
 
 const MAX_CHOICES = 8;
@@ -42,7 +42,7 @@ export function ChoicePicker() {
     setSpinning(true);
     setResult(null);
 
-    const reading = await readVolume();
+    const reading = await readWheelVolume(items.length);
     const index = riggedWheel(reading, items.length);
     resultRef.current = items[index];
 

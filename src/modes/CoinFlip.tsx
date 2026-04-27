@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Coin, type CoinHandle } from '../components/Coin';
-import { readVolume } from '../lib/volume';
+import { readCoinVolume } from '../lib/volume';
 import { riggedCoin, type CoinFace } from '../lib/rigging';
 import type { CoinDesign } from '../lib/coinDesigns';
 
@@ -18,7 +18,7 @@ export function CoinFlip({ design }: Props) {
     setSpinning(true);
     setResult(null);
 
-    const reading = await readVolume();
+    const reading = await readCoinVolume();
     const face = riggedCoin(reading);
 
     await coinRef.current?.flip(face);
