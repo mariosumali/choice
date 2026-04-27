@@ -1,0 +1,17 @@
+{
+  "name": "CHOICE",
+  "short_name": "CHOICE",
+  "description": "A minimalist decision-making app for coins, wheels, dice, and oracle answers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F2EC",
+  "theme_color": "#F5F2EC",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
