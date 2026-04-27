@@ -44,8 +44,8 @@ public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
         // we never want the user to see it.
         let view = MPVolumeView(frame: CGRect(x: -4000, y: -4000, width: 10, height: 10))
         view.showsRouteButton = false
-        view.isHidden = true
-        view.alpha = 0.0001
+        view.isUserInteractionEnabled = false
+        view.alpha = 0.01
 
         guard let rootView = bridge?.viewController?.view else {
             // Retry once on the next runloop tick — on cold start the Capacitor
@@ -57,8 +57,20 @@ public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         rootView.addSubview(view)
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
         volumeView = view
+        cacheVolumeSlider(in: view)
 
+        if volumeSlider == nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self, weak view] in
+                guard let view = view else { return }
+                self?.cacheVolumeSlider(in: view)
+            }
+        }
+    }
+
+    private func cacheVolumeSlider(in view: MPVolumeView) {
         for subview in view.subviews {
             if let slider = subview as? UISlider {
                 volumeSlider = slider
