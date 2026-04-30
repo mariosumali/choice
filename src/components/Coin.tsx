@@ -4,6 +4,7 @@ import {
   useMemo,
   useRef,
   type CSSProperties,
+  type MouseEvent,
   type ReactNode,
 } from 'react';
 import type { CoinFace } from '../lib/rigging';
@@ -135,12 +136,17 @@ export const Coin = forwardRef<CoinHandle, Props>(function Coin(
     '--slices': design.rimSlices,
   } as CSSProperties;
 
+  function handleClick(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    onClick();
+  }
+
   return (
     <div
       className="coin-scene"
       data-design={design.id}
       style={sceneStyle}
-      onClick={onClick}
+      onClick={handleClick}
       role="button"
       aria-label="Flip the coin"
       aria-disabled={spinning}

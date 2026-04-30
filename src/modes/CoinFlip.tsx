@@ -13,13 +13,18 @@ export function CoinFlip({ design }: Props) {
   const [result, setResult] = useState<CoinFace | null>(null);
   const [spinning, setSpinning] = useState(false);
 
-  async function flip() {
+  function oppositeFace(face: CoinFace): CoinFace {
+    return face === 'H' ? 'T' : 'H';
+  }
+
+  async function flip(invert = false) {
     if (spinning) return;
     setSpinning(true);
     setResult(null);
 
     const reading = await readCoinVolume();
-    const face = riggedCoin(reading);
+    const riggedFace = riggedCoin(reading);
+    const face = invert ? oppositeFace(riggedFace) : riggedFace;
 
     await coinRef.current?.flip(face);
 
@@ -28,17 +33,17 @@ export function CoinFlip({ design }: Props) {
   }
 
   return (
-    <>
+    <div className="coin-flip-mode" onClick={() => flip(true)}>
       <Coin
         key={design.id}
         ref={coinRef}
         design={design}
-        onClick={flip}
+        onClick={() => flip()}
         spinning={spinning}
       />
       <div className={`result ${result && !spinning ? 'visible' : ''}`}>
         {result === 'H' ? 'Heads' : result === 'T' ? 'Tails' : '\u00A0'}
       </div>
-    </>
+    </div>
   );
 }
